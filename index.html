@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telugu Letter PDF Tool | It makes your work easy | simple way and low cost | officer letter format</title>
+
+<!-- Razorpay Checkout SDK (పేమెంట్ పాప్-అప్ కోసం) -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<style>
+body{
+  font-family:"Noto Sans Telugu","Gautami","Lohit Telugu","Nirmala UI",sans-serif;
+  font-size:16px;
+  margin:20px;
+}
+h1{text-align:center}
+
+/* ===== Form ===== */
+label{display:block;font-weight:bold;margin-top:12px}
+input,textarea{
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  margin-bottom:14px;
+  border:2px solid #333;
+  border-radius:4px;
+  font-size:16px;
+  box-sizing:border-box;
+}
+.readonly-box{
+  background:#f3f3f3;
+  border:2px dashed #666;
+}
+button{
+  background:#2e7d32;
+  color:#fff;
+  padding:12px 28px;
+  border:none;
+  cursor:pointer;
+  display:block;
+  margin:25px auto;
+  font-size:18px;
+  font-weight:bold;
+  border-radius:4px;
+}
+
+/* ===== Preview ===== */
+#letterPreview{
+  display:none;
+  width:210mm;
+  height:297mm;
+  padding:20mm;
+  padding-bottom:32mm;
+  box-sizing:border-box;
+  background:#fff;
+  color:#000;
+  position:relative;
+}
+
+p{
+  margin:0;
+  line-height:1.55;
+  text-align:justify;
+}
+
+.right{text-align:right}
+.center{text-align:center}
+
+/* Header */
+.header p{ margin:1px 0; }
+
+/* Heading */
+#pHeading{
+  text-align:center;
+  margin:4px 0;
+}
+
+/* Address + Salutation */
+.address p,
+.salutation{
+  text-indent:10mm;
+  margin:2px 0;
+}
+
+.officer{
+  font-size:18px;
+  font-weight:bold;
+}
+
+/* ===== Subject ===== */
+.subject{
+  margin-top:1px !important;
+  margin-bottom:1.5px !important;
+  padding-left:27mm;
+  text-indent:-17mm;
+}
+
+.subject .subject-text{
+  font-size:15px;
+  font-weight:500;
+  background:#FCF9ED;
+  padding:1px 4px;
+  border-radius:2px;
+}
+/* Body */
+.body-content p{
+  text-indent:10mm;
+  margin-bottom:2px;
+}
+
+/* Signature */
+.signature{
+  text-align:right;
+  margin-right:20mm;
+}
+
+/* Footer */
+.footer{
+  position:absolute;
+  bottom:15mm;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:10px;
+  text-align:center;
+  width:100%;
+}
+.footer-line{
+  width:80%;
+  margin:0 auto 3px;
+  border-top:1px solid #000;
+}
+
+.promo-image{
+  display:block;
+  max-width:100%;
+  margin:15px auto;
+}
+
+#letterPreview .promo-image{
+  display:none;
+}
+
+@media print{
+  .promo-image{
+    display:none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h1>తెలుగు లేఖ తయారీ టూల్</h1>
+
+<img
+  src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhOMsRzvyVL9m4czmLHuaOzn3Yv_1-Vx6bLW-aGkLMQAgrwwJKuliMOf1WxlTfSKCFK3KCmRpfnUPN4icYWjLz3C9XhRfOtFahmE9YM6RPri1kLlD9dDWce1_5FWgU8Gy99FqJKYuxyWGLuphtvSLcwrZL2NOvnTGYRbSCBG8BlsqsWXed6gtzsVCs6b-UD/s1600/IMG-20260108-WA0013.jpg"
+  class="promo-image"
+  alt="Letter Service Preview">
+
+<form id="letterForm">
+  <label>తేదీ *</label>
+  <input type="date" id="date">
+
+  <label>సిటీ / ప్రాంతం</label>
+  <input type="text" id="city" placeholder="గుంటూరు.">
+
+  <label>హెడింగ్</label>
+  <input type="text" id="heading" placeholder="వినతి పత్రం">
+
+  <label>గౌరవనీయులు</label>
+  <input type="text" id="respected" placeholder="శ్రీయుత గౌరవనీయులైన,">
+
+  <label>హోదా</label>
+  <input type="text" id="officer" placeholder="జిల్లా కలెక్టర్,">
+
+  <label>కార్యాలయ సిటీ</label>
+  <input type="text" id="officeCity" placeholder="గుంటూరు జిల్లా">
+
+  <label></label>
+  <input type="text" value="గారికి," readonly class="readonly-box" id="gariki">
+
+  <label>సంభోదన</label>
+  <input type="text" id="salutation" placeholder="అయ్యా!">
+
+  <label>విషయం</label>
+  <input type="text" id="subject" placeholder="మంచినీటి సమస్య పరిష్కారం గురించి/గ్రంథాలయం ఏర్పాటు గురించి">
+
+  <label>లేఖ వివరణ (గరిష్టం 210 పదాలు)</label>
+  <textarea id="content" rows="14" placeholder="కొన్ని పదాలు Bold గా కావాలంటే వాటిని రెండు ** మధ్య రాయండి"></textarea>
+
+  <label>ధన్యవాదాలు</label>
+  <input type="text" id="thankyou" placeholder="కృతజ్ఞతలతో/ధన్యవాదాలు">
+
+  <label>ముగింపు</label>
+  <input type="text" id="signature" placeholder="మీ విధేయులు">
+
+  <label>Footer (optional)</label>
+  <input type="text" id="footerInput" placeholder="ఇక్కడ మీ షాప్ లేదా మీ పేరు లేదా ఫోన్ నెంబర్ ఇవ్వండి.">
+</form>
+
+<button type="button" onclick="startPayment()">Pay & Download PDF</button>
+
+<!-- ===== Preview (Hidden from screen during fill) ===== -->
+<div id="letterPreview">
+  <div class="header">
+    <p class="right">తేదీ: <span id="pDate"></span>,</p>
+    <p class="right" id="pCity"></p>
+  </div>
+
+  <h2 id="pHeading"></h2>
+
+  <div class="address">
+    <p id="pRespected"></p>
+    <p id="pOfficer" class="officer"></p>
+    <p id="pOfficeGariki"></p>
+  </div>
+
+  <p id="pSalutation" class="salutation"></p>
+
+  <p class="subject">
+    <strong>విషయం:</strong>
+    <span id="pSubject" class="subject-text"></span>
+  </p>
+
+  <div id="pContent" class="body-content"></div>
+
+  <p class="center" id="pThankyou"></p>
+  <p class="signature" id="pSignature"></p>
+
+  <div class="footer">
+    <div class="footer-line"></div>
+    <span id="pFooter"></span>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+const { jsPDF } = window.jspdf;
+
+// ఫీల్డ్ ఐడీల లిస్ట్ (Local Storage ఆటో-సేవ్ కోసం)
+const fields = ['date', 'city', 'heading', 'respected', 'officer', 'officeCity', 'salutation', 'subject', 'content', 'thankyou', 'signature', 'footerInput'];
+
+/* ===== 1. బ్రౌజర్ ఆటో-సేవ్ లోడ్ చేయడం ===== */
+window.addEventListener('DOMContentLoaded', () => {
+  fields.forEach(fieldId => {
+    const savedValue = localStorage.getItem(fieldId);
+    if (savedValue) {
+      document.getElementById(fieldId).value = savedValue;
+    }
+    
+    // యూజర్ టైప్ చేస్తున్నప్పుడు ఆటోమేటిక్‌గా సేవ్ అవుతుంది
+    document.getElementById(fieldId).addEventListener('input', (e) => {
+      localStorage.setItem(fieldId, e.target.value);
+    });
+  });
+  
+  lockPastDates();
+});
+
+function lockPastDates(){
+  const dateInput = document.getElementById("date");
+  if(!dateInput) return;
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  const todayStr = `${yyyy}-${mm}-${dd}`;
+  dateInput.setAttribute("min", todayStr);
+}
+
+/* ===== 2. పేమెంట్ గేట్‌వే రన్ చేయడం ===== */
+function startPayment() {
+  if(!document.getElementById("date").value){
+    alert("దయచేసి తేదీని ఎంచుకోండి.");
+    return;
+  }
+
+  const contentVal = document.getElementById("content").value;
+  const words = contentVal.trim().split(/\s+/).filter(Boolean);
+  if(words.length > 210){
+    alert("మీరు గరిష్టంగా 210 పదాలు మాత్రమే రాయగలరు. ప్రస్తుత పదాలు: " + words.length);
+    return;
+  }
+
+  // Razorpay చెకౌట్ ఆప్షన్స్
+  var options = {
+    "key": "rzp_test_T12dgMJ5QxbrTh", // మీ రేజర్‌పే TEST KEY (rzp_test_...) ఇక్కడ పెట్టండి
+    "amount": "2900", // ధర రూ. 29 (పైసల్లో ఇవ్వాలి)
+    "currency": "INR",
+    "name": "Telugu Letter Tool",
+    "description": "Letter PDF Generation Charge",
+    "handler": function (response){
+      // పేమెంట్ సక్సెస్ అయితేనే ఈ కింద ఉన్న ఫంక్షన్ రన్ అవుతుంది
+      alert("పేమెంట్ విజయవంతమైంది! మీ PDF డౌన్‌లోడ్ అవుతోంది...");
+      generatePDF();
+    },
+    "theme": {
+      "color": "#2e7d32"
+    }
+  };
+  
+  var rzp1 = new Razorpay(options);
+  rzp1.open();
+}
+
+/* ===== 3. పీడీఎఫ్ జనరేషన్ ఫంక్షన్ ===== */
+async function generatePDF(){
+  const date = document.getElementById("date");
+  const city = document.getElementById("city");
+  const heading = document.getElementById("heading");
+  const respected = document.getElementById("respected");
+  const officer = document.getElementById("officer");
+  const officeCity = document.getElementById("officeCity");
+  const salutation = document.getElementById("salutation");
+  const subject = document.getElementById("subject");
+  const content = document.getElementById("content");
+  const thankyou = document.getElementById("thankyou");
+  const signature = document.getElementById("signature");
+  const footerInput = document.getElementById("footerInput");
+
+  // ప్రివ్యూ డేటా అసైన్మెంట్
+  document.getElementById("pDate").textContent = date.value.split("-").reverse().join("-");
+  document.getElementById("pCity").textContent = city.value;
+  document.getElementById("pHeading").textContent = heading.value;
+  document.getElementById("pRespected").textContent = respected.value;
+  document.getElementById("pOfficer").textContent = officer.value;
+
+  const officeFinal = officeCity.value || city.value;
+  document.getElementById("pOfficeGariki").innerHTML = officeFinal + " <i>గారికి,</i>";
+
+  document.getElementById("pSalutation").textContent = salutation.value;
+  document.getElementById("pSubject").textContent = subject.value;
+  document.getElementById("pThankyou").textContent = thankyou.value;
+  document.getElementById("pSignature").textContent = signature.value;
+  document.getElementById("pFooter").textContent = footerInput.value || "Sri Medha Xerox and DTP centre | Jagtial";
+
+  const pContent = document.getElementById("pContent");
+  pContent.innerHTML = "";
+  content.value.split("\n").forEach(line => {
+    if(!line.trim()) return;
+    const p = document.createElement("p");
+    p.innerHTML = line.replace(/\*(.*?)\*/g, "<strong>$1</strong>");
+    pContent.appendChild(p);
+  });
+
+  const preview = document.getElementById("letterPreview");
+  preview.style.display = "block";
+
+  try{
+    const canvas = await html2canvas(preview, {scale:2});
+    const pdf = new jsPDF({
+      orientation: "p",
+      unit: "mm",
+      format: "a4"
+    });
+    pdf.addImage(canvas, "PNG", 0, 0, 210, 297);
+    pdf.save("telugu_letter.pdf");
+  }catch(e){
+    alert("PDF జనరేషన్ విఫలమైంది. మళ్లీ ప్రయత్నించండి.");
+    console.error(e);
+  }finally{
+    preview.style.display = "none";
+  }
+}
+</script>
+
+</body>
+</html>
