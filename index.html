@@ -45,6 +45,33 @@ button{
   border-radius:4px;
 }
 
+/* ===== Promo Code Section ===== */
+.promo-container {
+  max-width: 100%;
+  margin: 15px 0;
+  padding: 12px;
+  background: #f9f9f9;
+  border: 1px solid #333;
+  border-radius: 4px;
+}
+.promo-flex {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+.promo-flex input {
+  margin: 0;
+  width: 70%;
+  text-transform: uppercase;
+}
+.promo-flex button {
+  margin: 0;
+  width: 30%;
+  background: #0275d8;
+  padding: 10px;
+  font-size: 16px;
+}
+
 /* ===== Preview ===== */
 #letterPreview{
   display:none;
@@ -151,7 +178,7 @@ p{
 
 <body>
 
-<h1>తెలుగు లేఖ తయారీ టూల్</h1>
+<h1>తెలుగు లేఖ తయారీ</h1>
 
 <img
   src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhOMsRzvyVL9m4czmLHuaOzn3Yv_1-Vx6bLW-aGkLMQAgrwwJKuliMOf1WxlTfSKCFK3KCmRpfnUPN4icYWjLz3C9XhRfOtFahmE9YM6RPri1kLlD9dDWce1_5FWgU8Gy99FqJKYuxyWGLuphtvSLcwrZL2NOvnTGYRbSCBG8BlsqsWXed6gtzsVCs6b-UD/s1600/IMG-20260108-WA0013.jpg"
@@ -175,7 +202,7 @@ p{
   <input type="text" id="officer" placeholder="జిల్లా కలెక్టర్,">
 
   <label>కార్యాలయ సిటీ</label>
-  <input type="text" id="officeCity" placeholder="గుంటూరు జిల్లా">
+  <input type="text" id="officeCity" placeholder="గుంటూరు  జిల్లా">
 
   <label></label>
   <input type="text" value="గారికి," readonly class="readonly-box" id="gariki">
@@ -186,7 +213,7 @@ p{
   <label>విషయం</label>
   <input type="text" id="subject" placeholder="మంచినీటి సమస్య పరిష్కారం గురించి/గ్రంథాలయం ఏర్పాటు గురించి">
 
-  <label>లేఖ వివరణ (గరిష్టం 210 పదాలు)</label>
+  <label>లేఖ వివరణ (గరిష్ఠం 250 పదాలు)</label>
   <textarea id="content" rows="14" placeholder="కొన్ని పదాలు Bold గా కావాలంటే వాటిని రెండు ** మధ్య రాయండి"></textarea>
 
   <label>ధన్యవాదాలు</label>
@@ -197,9 +224,19 @@ p{
 
   <label>Footer (optional)</label>
   <input type="text" id="footerInput" placeholder="ఇక్కడ మీ షాప్ లేదా మీ పేరు లేదా ఫోన్ నెంబర్ ఇవ్వండి.">
+  
+  <!-- కొత్తగా చేర్చిన ప్రోమో కోడ్ సెక్షన్ -->
+  <div class="promo-container">
+    <label>ప్రోమో కోడ్ (Promo Code):</label>
+    <div class="promo-flex">
+      <input type="text" id="promoCode" placeholder="NEW లేదా NEW10 అని టైప్ చేయండి">
+      <button type="button" onclick="applyPromoCode()">Apply</button>
+    </div>
+    <span id="promoMessage" style="display:block; margin-top:5px; font-weight:bold;"></span>
+  </div>
 </form>
 
-<button type="button" onclick="startPayment()">Pay & Download PDF</button>
+<button type="button" onclick="startPayment()" id="payBtn">Pay & Download PDF</button>
 
 <!-- ===== Preview (Hidden from screen during fill) ===== -->
 <div id="letterPreview">
@@ -243,6 +280,9 @@ const { jsPDF } = window.jspdf;
 // ఫీల్డ్ ఐడీల లిస్ట్ (Local Storage ఆటో-సేవ్ కోసం)
 const fields = ['date', 'city', 'heading', 'respected', 'officer', 'officeCity', 'salutation', 'subject', 'content', 'thankyou', 'signature', 'footerInput'];
 
+let finalAmount = 29; // అసలు అమౌంట్ రూ. 29
+let isPromoApplied = false;
+
 /* ===== 1. బ్రౌజర్ ఆటో-సేవ్ లోడ్ చేయడం ===== */
 window.addEventListener('DOMContentLoaded', () => {
   fields.forEach(fieldId => {
@@ -271,6 +311,27 @@ function lockPastDates(){
   dateInput.setAttribute("min", todayStr);
 }
 
+/* ===== కొత్తగా చేర్చిన ప్రోమో కోడ్ లాజిక్ ===== */
+function applyPromoCode() {
+  const code = document.getElementById('promoCode').value.trim().toUpperCase();
+  const msg = document.getElementById('promoMessage');
+  const btn = document.getElementById('payBtn');
+  
+  if (code === 'NEW' || code === 'NEW10') {
+    finalAmount = 0;
+    isPromoApplied = true;
+    msg.style.color = 'green';
+    msg.innerText = '🎉 ప్రోమో కోడ్ అప్లై అయింది! మొదటి లేఖ ఉచితం.';
+    btn.innerText = 'Download Free PDF';
+  } else {
+    finalAmount = 29;
+    isPromoApplied = false;
+    msg.style.color = 'red';
+    msg.innerText = '❌ తప్పుడు ప్రోమో కోడ్.';
+    btn.innerText = 'Pay & Download PDF';
+  }
+}
+
 /* ===== 2. పేమెంట్ గేట్‌వే రన్ చేయడం ===== */
 function startPayment() {
   if(!document.getElementById("date").value){
@@ -280,20 +341,25 @@ function startPayment() {
 
   const contentVal = document.getElementById("content").value;
   const words = contentVal.trim().split(/\s+/).filter(Boolean);
-  if(words.length > 210){
-    alert("మీరు గరిష్టంగా 210 పదాలు మాత్రమే రాయగలరు. ప్రస్తుత పదాలు: " + words.length);
+  if(words.length > 250){
+    alert("మీరు గరిష్టంగా 250 పదాలు మాత్రమే రాయగలరు. ప్రస్తుత పదాలు: " + words.length);
     return;
   }
 
-  // Razorpay చెకౌట్ ఆప్షన్స్
+  // ఒకవేళ ప్రోమో కోడ్ ద్వారా ఉచితం అయితే నేరుగా పీడీఎఫ్ జనరేట్ అవుతుంది
+  if (finalAmount === 0 && isPromoApplied) {
+    generatePDF();
+    return;
+  }
+
+  // Razorpay చెకౌట్ ఆప్షన్స్ (ఇక్కడ మీ ఒరిజినల్ Live Key ని రీప్లేస్ చేసుకోండి)
   var options = {
-    "key": "rzp_live_T18sE5oDk1k8ey", // మీ రేజర్‌పే TEST KEY (rzp_test_...) ఇక్కడ పెట్టండి
-    "amount": "900", // ధర రూ. 29 (పైసల్లో ఇవ్వాలి)
+    "key": "rzp_test_T12dgMJ5QxbrTh", 
+    "amount": (finalAmount * 100).toString(), // పైసల్లో ఇవ్వాలి
     "currency": "INR",
     "name": "Telugu Letter Tool",
     "description": "Letter PDF Generation Charge",
     "handler": function (response){
-      // పేమెంట్ సక్సెస్ అయితేనే ఈ కింద ఉన్న ఫంక్షన్ రన్ అవుతుంది
       alert("పేమెంట్ విజయవంతమైంది! మీ PDF డౌన్‌లోడ్ అవుతోంది...");
       generatePDF();
     },
@@ -306,7 +372,7 @@ function startPayment() {
   rzp1.open();
 }
 
-/* ===== 3. పీడీఎఫ్ జనరేషన్ ఫంక్షన్ ===== */
+/* ===== 3. పీడీఎఫ్ జనరేషన్ ఫంక్షన్ (డైనమిక్ ఫైల్ నేమ్‌తో) ===== */
 async function generatePDF(){
   const date = document.getElementById("date");
   const city = document.getElementById("city");
@@ -320,6 +386,12 @@ async function generatePDF(){
   const thankyou = document.getElementById("thankyou");
   const signature = document.getElementById("signature");
   const footerInput = document.getElementById("footerInput");
+
+  // డైనమిక్ ఫైల్ నేమ్ కోసం హెడింగ్ వాల్యూను తీసుకోవడం
+  let fileTitle = heading.value.trim();
+  if(fileTitle === "") {
+    fileTitle = "telugu_letter"; // ఒకవేళ హెడింగ్ ఖాళీగా ఉంటే డీఫాల్ట్ నేమ్
+  }
 
   // ప్రివ్యూ డేటా అసైన్మెంట్
   document.getElementById("pDate").textContent = date.value.split("-").reverse().join("-");
@@ -335,7 +407,7 @@ async function generatePDF(){
   document.getElementById("pSubject").textContent = subject.value;
   document.getElementById("pThankyou").textContent = thankyou.value;
   document.getElementById("pSignature").textContent = signature.value;
-  document.getElementById("pFooter").textContent = footerInput.value || "Sri Medha Xerox and DTP centre | Jagtial";
+  document.getElementById("pFooter").textContent = footerInput.value || "";
 
   const pContent = document.getElementById("pContent");
   pContent.innerHTML = "";
@@ -357,7 +429,9 @@ async function generatePDF(){
       format: "a4"
     });
     pdf.addImage(canvas, "PNG", 0, 0, 210, 297);
-    pdf.save("telugu_letter.pdf");
+    
+    // ఇక్కడ ఫైల్ నేమ్ యూజర్ ఇచ్చిన హెడింగ్ బట్టి మారుతుంది
+    pdf.save(fileTitle + ".pdf");
   }catch(e){
     alert("PDF జనరేషన్ విఫలమైంది. మళ్లీ ప్రయత్నించండి.");
     console.error(e);
