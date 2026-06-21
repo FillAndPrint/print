@@ -2,8 +2,7 @@
 <html lang="te">
 <head>
 <meta charset="UTF-8">
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5XTL23HRXT"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5XTL23HRXT"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -14,7 +13,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Telugu Letter PDF Tool | It makes your work easy | simple way and low cost | officer letter format</title>
 
-<!-- Razorpay Checkout SDK (పేమెంట్ పాప్-అప్ కోసం) -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <style>
@@ -22,8 +20,29 @@ body{
   font-family:"Noto Sans Telugu","Gautami","Lohit Telugu","Nirmala UI",sans-serif;
   font-size:16px;
   margin:20px;
+  background-color: ##8A8AFF;
 }
 h1{text-align:center}
+
+/* ===== Home Button Style ===== */
+.home-btn-container {
+  max-width: 100%;
+  margin-bottom: 20px;
+}
+.home-btn {
+  display: inline-flex;
+  align-items: center;
+  background: #333;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 4px;
+  font-size: 15px;
+}
+.home-btn:hover {
+  background: #555;
+}
 
 /* ===== Form ===== */
 label{display:block;font-weight:bold;margin-top:12px}
@@ -94,14 +113,15 @@ button{
   position:relative;
 }
 
-p{
+#letterPreview p{
   margin:0;
   line-height:1.55;
   text-align:justify;
+  word-spacing: 2px;
 }
 
-.right{text-align:right}
-.center{text-align:center}
+.right{text-align:right !important}
+.center{text-align:center !important}
 
 /* Header */
 .header p{ margin:1px 0; }
@@ -142,13 +162,23 @@ p{
 /* Body */
 .body-content p{
   text-indent:10mm;
-  margin-bottom:2px;
+  margin-bottom:8px;
 }
 
-/* Signature */
-.signature{
-  text-align:right;
-  margin-right:20mm;
+/* ధన్యవాదాలు బోల్డ్ మరియు సెంటర్ అలైన్‌మెంట్ */
+#pThankyou {
+  text-align: center !important;
+  font-weight: bold !important;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+/* ముగింపు ఐడీకి నేరుగా స్టైల్స్ ఇచ్చి, ఎడమ వైపుకు జరపడం జరిగింది */
+#pSignature {
+  text-align: right !important;
+  margin-right: 20mm !important;
+  margin-top: 10px !important;
+  display: block !important;
 }
 
 /* Footer */
@@ -167,32 +197,16 @@ p{
   border-top:1px solid #000;
 }
 
-.promo-image{
-  display:block;
-  max-width:100%;
-  margin:15px auto;
-}
-
-#letterPreview .promo-image{
-  display:none;
-}
-
-@media print{
-  .promo-image{
-    display:none !important;
-  }
-}
 </style>
 </head>
 
 <body>
 
-<h1>తెలుగు లేఖ తయారీ</h1>
+<div class="home-btn-container">
+  <a href="https://fillandprint.github.io/" class="home-btn">Home</a>
+</div>
 
-<img
-  src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhOMsRzvyVL9m4czmLHuaOzn3Yv_1-Vx6bLW-aGkLMQAgrwwJKuliMOf1WxlTfSKCFK3KCmRpfnUPN4icYWjLz3C9XhRfOtFahmE9YM6RPri1kLlD9dDWce1_5FWgU8Gy99FqJKYuxyWGLuphtvSLcwrZL2NOvnTGYRbSCBG8BlsqsWXed6gtzsVCs6b-UD/s1600/IMG-20260108-WA0013.jpg"
-  class="promo-image"
-  alt="Letter Service Preview">
+<h1>Letter to officer</h1>
 
 <form id="letterForm">
   <label>తేదీ *</label>
@@ -234,7 +248,6 @@ p{
   <label>Footer (optional)</label>
   <input type="text" id="footerInput" placeholder="ఇక్కడ మీ షాప్ లేదా మీ పేరు లేదా ఫోన్ నెంబర్ ఇవ్వండి.">
   
-  <!-- కొత్తగా చేర్చిన ప్రోమో కోడ్ సెక్షన్ -->
   <div class="promo-container">
     <label>ప్రోమో కోడ్ (Promo Code):</label>
     <div class="promo-flex">
@@ -247,7 +260,6 @@ p{
 
 <button type="button" onclick="startPayment()" id="payBtn">Pay & Download PDF</button>
 
-<!-- ===== Preview (Hidden from screen during fill) ===== -->
 <div id="letterPreview">
   <div class="header">
     <p class="right">తేదీ: <span id="pDate"></span>,</p>
@@ -271,8 +283,8 @@ p{
 
   <div id="pContent" class="body-content"></div>
 
-  <p class="center" id="pThankyou"></p>
-  <p class="signature" id="pSignature"></p>
+  <p id="pThankyou"></p>
+  <p id="pSignature"></p>
 
   <div class="footer">
     <div class="footer-line"></div>
@@ -361,7 +373,7 @@ function startPayment() {
     return;
   }
 
-  // Razorpay చెకౌట్ ఆప్షన్స్ (ఇక్కడ మీ ఒరిజినల్ Live Key ని రీప్లేస్ చేసుకోండి)
+  // Razorpay చెకౌట్ ఆప్ชั่นస్ (ఇక్కడ మీ ఒరిజినల్ Live Key ని రీప్లేస్ చేసుకోండి)
   var options = {
     "key": "rzp_test_T12dgMJ5QxbrTh", 
     "amount": (finalAmount * 100).toString(), // పైసల్లో ఇవ్వాలి
@@ -369,7 +381,7 @@ function startPayment() {
     "name": "Telugu Letter Tool",
     "description": "Letter PDF Generation Charge",
     "handler": function (response){
-      alert("పేమెంట్ విజయవంతమైంది! మీ PDF డౌన్‌లోడ్ అవుతోంది...");
+      alert("పేమెంట్ విజయవంతమైంది! మీ PDF డౌน์โหลด అవుతోంది...");
       generatePDF();
     },
     "theme": {
