@@ -19,32 +19,66 @@
 body{
   font-family:"Noto Sans Telugu","Gautami","Lohit Telugu","Nirmala UI",sans-serif;
   font-size:16px;
-  margin:20px;
-  background-color: ##8A8AFF;
+  margin:0;
+  padding: 0;
+  background-color: #f3f4f6;
 }
-h1{text-align:center}
+h1{
+  text-align:center;
+  color: #1e3a8a;
+  font-size: 24px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
 
-/* ===== Home Button Style ===== */
-.home-btn-container {
-  max-width: 100%;
-  margin-bottom: 20px;
-}
-.home-btn {
-  display: inline-flex;
+/* ===== Navigation Header (Fixed) ===== */
+.nav-header {
+  background-color: #1e3a8a;
+  color: white;
+  padding: 12px 20px;
+  display: flex;
   align-items: center;
-  background: #333;
-  color: #fff;
-  padding: 8px 16px;
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 4px;
-  font-size: 15px;
+  justify-content: flex-start;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
-.home-btn:hover {
-  background: #555;
+.btn-nav-home {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin: 0;
+  flex-shrink: 0;
+}
+.btn-nav-home:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+.nav-title {
+  font-size: 16px;
+  font-weight: bold;
+  white-space: nowrap;
+  margin: 0;
 }
 
-/* ===== Form ===== */
+/* ===== Form Layout ===== */
+#letterForm {
+  max-width: 650px;
+  margin: 0 auto 20px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
 label{display:block;font-weight:bold;margin-top:12px}
 input,textarea{
   width:100%;
@@ -60,17 +94,23 @@ input,textarea{
   background:#f3f3f3;
   border:2px dashed #666;
 }
+
+/* Fixed Global Button styling (Removed layout block properties) */
 button{
   background:#2e7d32;
   color:#fff;
   padding:12px 28px;
   border:none;
   cursor:pointer;
-  display:block;
-  margin:25px auto;
   font-size:18px;
   font-weight:bold;
   border-radius:4px;
+}
+
+/* Specific layout styles for Download Button only */
+#payBtn {
+  display: block;
+  margin: 25px auto;
 }
 
 /* ===== Promo Code Section ===== */
@@ -116,8 +156,9 @@ button{
 #letterPreview p{
   margin:0;
   line-height:1.55;
-  text-align:justify;
-  word-spacing: 2px;
+  text-align: justify; 
+  text-justify: inter-word; 
+  word-spacing: 1px;
 }
 
 .right{text-align:right !important}
@@ -202,8 +243,10 @@ button{
 
 <body>
 
-<div class="home-btn-container">
-  <a href="https://fillandprint.github.io/" class="home-btn">Home</a>
+<!-- Corrected HTML structure -->
+<div class="nav-header">
+  <button type="button" class="btn-nav-home" onclick="location.href='https://fillandprint.github.io/'">Home</button>
+  <span class="nav-title">Telugu Letter Portal</span>
 </div>
 
 <h1>Letter to officer</h1>
@@ -236,7 +279,7 @@ button{
   <label>విషయం</label>
   <input type="text" id="subject" placeholder="మంచినీటి సమస్య పరిష్కారం గురించి/గ్రంథాలయం ఏర్పాటు గురించి">
 
-  <label>లేఖ వివరణ (గరిష్ఠం 250 పదాలు)</label>
+  <label>లేఖ వివరణ (కనిష్ఠం 250 పదాలు)</label>
   <textarea id="content" rows="14" placeholder="కొన్ని పదాలు Bold గా కావాలంటే వాటిని రెండు ** మధ్య రాయండి"></textarea>
 
   <label>ధన్యవాదాలు</label>
@@ -256,9 +299,9 @@ button{
     </div>
     <span id="promoMessage" style="display:block; margin-top:5px; font-weight:bold;"></span>
   </div>
-</form>
 
-<button type="button" onclick="startPayment()" id="payBtn">Pay & Download PDF</button>
+  <button type="button" onclick="startPayment()" id="payBtn">Pay & Download PDF</button>
+</form>
 
 <div id="letterPreview">
   <div class="header">
@@ -298,13 +341,11 @@ button{
 <script>
 const { jsPDF } = window.jspdf;
 
-// ఫీల్డ్ ఐడీల లిస్ట్ (Local Storage ఆటో-సేవ్ కోసం)
 const fields = ['date', 'city', 'heading', 'respected', 'officer', 'officeCity', 'salutation', 'subject', 'content', 'thankyou', 'signature', 'footerInput'];
 
-let finalAmount = 29; // అసలు అమౌంట్ రూ. 29
+let finalAmount = 29; 
 let isPromoApplied = false;
 
-/* ===== 1. బ్రౌజర్ ఆటో-సేవ్ లోడ్ చేయడం ===== */
 window.addEventListener('DOMContentLoaded', () => {
   fields.forEach(fieldId => {
     const savedValue = localStorage.getItem(fieldId);
@@ -312,7 +353,6 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById(fieldId).value = savedValue;
     }
     
-    // యూజర్ టైప్ చేస్తున్నప్పుడు ఆటోమేటిక్‌గా సేవ్ అవుతుంది
     document.getElementById(fieldId).addEventListener('input', (e) => {
       localStorage.setItem(fieldId, e.target.value);
     });
@@ -332,7 +372,6 @@ function lockPastDates(){
   dateInput.setAttribute("min", todayStr);
 }
 
-/* ===== కొత్తగా చేర్చిన ప్రోమో కోడ్ లాజిక్ ===== */
 function applyPromoCode() {
   const code = document.getElementById('promoCode').value.trim().toUpperCase();
   const msg = document.getElementById('promoMessage');
@@ -353,7 +392,6 @@ function applyPromoCode() {
   }
 }
 
-/* ===== 2. పేమెంట్ గేట్‌వే రన్ చేయడం ===== */
 function startPayment() {
   if(!document.getElementById("date").value){
     alert("దయచేసి తేదీని ఎంచుకోండి.");
@@ -363,20 +401,18 @@ function startPayment() {
   const contentVal = document.getElementById("content").value;
   const words = contentVal.trim().split(/\s+/).filter(Boolean);
   if(words.length > 250){
-    alert("మీరు గరిష్టంగా 250 పదాలు మాత్రమే రాయగలరు. ప్రస్తుత పదాలు: " + words.length);
+    alert("మీరు కనిష్ఠంగా 250 పదాలు మాత్రమే రాయగలరు. ప్రస్తుత పదాలు: " + words.length);
     return;
   }
 
-  // ఒకవేళ ప్రోమో కోడ్ ద్వారా ఉచితం అయితే నేరుగా పీడీఎఫ్ జనరేట్ అవుతుంది
   if (finalAmount === 0 && isPromoApplied) {
     generatePDF();
     return;
   }
 
-  // Razorpay చెకౌట్ ఆప్ชั่นస్ (ఇక్కడ మీ ఒరిజినల్ Live Key ని రీప్లేస్ చేసుకోండి)
   var options = {
     "key": "rzp_test_T12dgMJ5QxbrTh", 
-    "amount": (finalAmount * 100).toString(), // పైసల్లో ఇవ్వాలి
+    "amount": (finalAmount * 100).toString(), 
     "currency": "INR",
     "name": "Telugu Letter Tool",
     "description": "Letter PDF Generation Charge",
@@ -393,7 +429,6 @@ function startPayment() {
   rzp1.open();
 }
 
-/* ===== 3. పీడీఎఫ్ జనరేషన్ ఫంక్షన్ (డైనమిక్ ఫైల్ నేమ్‌తో) ===== */
 async function generatePDF(){
   const date = document.getElementById("date");
   const city = document.getElementById("city");
@@ -408,13 +443,11 @@ async function generatePDF(){
   const signature = document.getElementById("signature");
   const footerInput = document.getElementById("footerInput");
 
-  // డైనమిక్ ఫైల్ నేమ్ కోసం హెడింగ్ వాల్యూను తీసుకోవడం
   let fileTitle = heading.value.trim();
   if(fileTitle === "") {
-    fileTitle = "telugu_letter"; // ఒకవేళ హెడింగ్ ఖాళీగా ఉంటే డీఫాల్ట్ నేమ్
+    fileTitle = "telugu_letter"; 
   }
 
-  // ప్రివ్యూ డేటా అసైన్మెంట్
   document.getElementById("pDate").textContent = date.value.split("-").reverse().join("-");
   document.getElementById("pCity").textContent = city.value;
   document.getElementById("pHeading").textContent = heading.value;
@@ -450,8 +483,6 @@ async function generatePDF(){
       format: "a4"
     });
     pdf.addImage(canvas, "PNG", 0, 0, 210, 297);
-    
-    // ఇక్కడ ఫైల్ నేమ్ యూజర్ ఇచ్చిన హెడింగ్ బట్టి మారుతుంది
     pdf.save(fileTitle + ".pdf");
   }catch(e){
     alert("PDF జనరేషన్ విఫలమైంది. మళ్లీ ప్రయత్నించండి.");
