@@ -411,13 +411,13 @@ function startPayment() {
   }
 
   var options = {
-    "key": "rzp_test_T12dgMJ5QxbrTh", 
+    "key": "rzp_live_T18sE5oDk1k8ey", 
     "amount": (finalAmount * 100).toString(), 
     "currency": "INR",
     "name": "Telugu Letter Tool",
     "description": "Letter PDF Generation Charge",
     "handler": function (response){
-      alert("పేమెంట్ విజయవంతమైంది! మీ PDF డౌน์โหลด అవుతోంది...");
+      alert("పేమెంట్ విజయవంతమైంది! మీ PDF download అవుతోంది...");
       generatePDF();
     },
     "theme": {
